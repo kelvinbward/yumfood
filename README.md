@@ -30,10 +30,10 @@ This project is built using a pair-programming paradigm between a Human Architec
 ## 📋 Project Plan Checklist
 
 ### Phase 1: Environment & Tooling
-- [ ] Install Now SDK & Node.js.
-- [ ] Initialize `food` scoped application via SDK.
-- [ ] Configure Antigravity MCP connection to ServiceNow PDI.
-- [ ] Enable SNUtils ScriptSync Agent API and directory structure.
+- [X] Install Now SDK & Node.js.
+- [X] Initialize `food` scoped application via SDK.
+- [X] Configure Antigravity MCP connection to ServiceNow PDI.
+- [X] Enable SNUtils ScriptSync Agent API and directory structure.
 
 ### Phase 2: Data Modeling (Fluent)
 - [ ] Define `x_food_inventory` table in Fluent.
@@ -64,6 +64,48 @@ This project is built using a pair-programming paradigm between a Human Architec
 ### Phase 7: CI/CD & Documentation
 - [ ] Configure GitHub Actions for automated deployment.
 - [ ] Finalize README and documentation for portfolio presentation.
+
+---
+
+## 🏛️ Architectural Controls & Pair Programming
+
+This repository enforces a formal **Read/Write Boundary** between the two AI-integrated toolchains. Human developers must be aware of these controls before contributing.
+
+### The Pair Programming Paradigm
+
+Development follows a structured collaboration model between the **Human Architect** and the **L3 Agent**:
+
+| Role | Responsibility |
+|---|---|
+| **Human Architect** | Defines product vision, approves data models, reviews Fluent TypeScript before `now deploy`, and owns the git branching strategy. |
+| **L3 Agent (Antigravity)** | Implements Fluent schema/logic in `src/`, uses the SN Agent API to scout the live PDI for schema validation, and reports deployment verification results. |
+
+The Human Architect has final approval on all structural changes. The Agent is an implementation partner, not an autonomous deployer.
+
+### The Read/Write Boundary (Critical)
+
+This project uses **two separate toolchains** with strictly enforced responsibilities:
+
+#### ✅ WRITE — Now SDK (Fluent Framework) — *The Source of Truth*
+The `src/` directory contains the canonical, git-tracked representation of the application. All structural changes — tables, roles, ACLs, business rules, script includes — **must originate here** as TypeScript files and be deployed via `now deploy`.
+
+* This is the **immutable source-of-truth**. If it isn't in `src/`, it doesn't officially exist.
+* Direct record creation via any other mechanism is **prohibited** as it creates drift between the codebase and the live instance.
+
+#### 🔍 READ — SN Utils Agent API — *Live Introspection Only*
+The `agent/requests/` queue provides a file-system bridge to the live PDI for real-time debugging and validation. This channel is **locked to read-only operations**:
+
+* ✅ Allowed: `check_connection`, `get_table_metadata`, `query_records`, `take_screenshot`, `run_slash_command`, `activate_tab`
+* ❌ Prohibited: `create_artifact`, `update_record`, or any mutation command
+
+Use the Agent API to **verify** that a `now deploy` succeeded — never to perform the deployment itself.
+
+### Configuration Files
+| File | Purpose |
+|---|---|
+| `.antigravityignore` | Excludes token-heavy auto-generated files (e.g., `agentinstructions.md`) from AI context |
+| `.antigravity/rules/servicenow-sdlc-guardrails.md` | Declarative architectural constraints loaded by the AI agent |
+| `.antigravity/skills/sn-agent-api-readonly.md` | Command schema reference for the read-only SN Agent API |
 
 ---
 

@@ -1,0 +1,6 @@
+{
+  "scope": "x_2014000_food",
+  "scopeId": "2f9298cafd1c4c1d9cc411eeb900231d",
+  "name": "food",
+  "tsconfigPath": "./src/server/tsconfig.json"
+}
