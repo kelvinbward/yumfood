@@ -30,6 +30,8 @@ target/
 # --- IDE & OS Noise ---
 .vscode/settings.json
 .DS_Store
+jsconfig.json
+
 *.log
 *.swp
 *.swo

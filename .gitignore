@@ -8,3 +8,4 @@ target/
 agent/requests/
 autocomplete/
 agentinstructions.md
+jsconfig.json
